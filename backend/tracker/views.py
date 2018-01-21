@@ -1,18 +1,18 @@
 from django.contrib.auth.models import User
 from django.http import Http404
 from rest_framework import generics, mixins, permissions
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
 
 from .models import Reading
 from .permissions import IsOwnerOrReadOnly
 from .serializers import ReadingSerializer, UserSerializer
+from .serializers import OldReadingSerializer, OldUserSerializer
 
 # API v3
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-# API v2
-from rest_framework.decorators import api_view
 
 # API v1
 from django.http import HttpResponse, JsonResponse
@@ -23,6 +23,14 @@ from rest_framework.parsers import JSONParser
 
 def index(request):
     return HttpResponse('tracker index works!')
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'readings': reverse('reading-list', request=request, format=format)
+    })
 
 
 class ReadingList(generics.ListCreateAPIView):
@@ -85,11 +93,11 @@ class ReadingDetailV4(mixins.RetrieveModelMixin,
 class ReadingListV3(APIView):
     def get(self, request, format=None):
         readings = Reading.objects.all()
-        serializer = ReadingSerializer(readings, many=True)
+        serializer = OldReadingSerializer(readings, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = ReadingSerializer(data=request.data)
+        serializer = OldReadingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -105,12 +113,12 @@ class ReadingDetailV3(APIView):
 
     def get(self, request, pk, format=None):
         reading = self.get_object(pk)
-        serializer = ReadingSerializer(reading)
+        serializer = OldReadingSerializer(reading)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
         reading = self.get_object(pk)
-        serializer = ReadingSerializer(reading, data=request.data)
+        serializer = OldReadingSerializer(reading, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -126,11 +134,11 @@ class ReadingDetailV3(APIView):
 def reading_list_v2(request, format=None):
     if request.method == 'GET':
         readings = Reading.objects.all()
-        serializer = ReadingSerializer(readings, many=True)
+        serializer = OldReadingSerializer(readings, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = ReadingSerializer(data=request.data)
+        serializer = OldReadingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -145,11 +153,11 @@ def reading_detail_v2(request, pk, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = ReadingSerializer(reading)
+        serializer = OldReadingSerializer(reading)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = ReadingSerializer(reading, data=request.data)
+        serializer = OldReadingSerializer(reading, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -164,12 +172,12 @@ def reading_detail_v2(request, pk, format=None):
 def reading_list_v1(request):
     if request.method == 'GET':
         readings = Reading.objects.all()
-        serializer = ReadingSerializer(readings, many=True)
+        serializer = OldReadingSerializer(readings, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = ReadingSerializer(data=data)
+        serializer = OldReadingSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -184,12 +192,12 @@ def reading_detail_v1(request, pk):
         return HttpResponse(status=404)
 
     if request.method == 'GET':
-        serializer = ReadingSerializer(reading)
+        serializer = OldReadingSerializer(reading)
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = ReadingSerializer(reading, data=data)
+        serializer = OldReadingSerializer(reading, data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
