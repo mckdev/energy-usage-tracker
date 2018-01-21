@@ -7,7 +7,7 @@ from .serializers import ReadingSerializer
 
 
 def index(request):
-	return HttpResponse('tracker index works!')
+    return HttpResponse('tracker index works!')
 
 
 @csrf_exempt

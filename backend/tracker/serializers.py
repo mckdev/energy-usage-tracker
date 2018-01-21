@@ -3,6 +3,6 @@ from .models import Reading
 
 
 class ReadingSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Reading
-		fields = ('id', 'date', 'value')
+    class Meta:
+        model = Reading
+        fields = ('id', 'date', 'value')
