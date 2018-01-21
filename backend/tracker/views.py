@@ -1,5 +1,10 @@
+from django.contrib.auth.models import User
 from django.http import Http404
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins, permissions
+
+from .models import Reading
+from .permissions import IsOwnerOrReadOnly
+from .serializers import ReadingSerializer, UserSerializer
 
 # API v3
 from rest_framework import status
@@ -7,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # API v2
-from rest_framework.decorators import api_view 
+from rest_framework.decorators import api_view
 
 # API v1
 from django.http import HttpResponse, JsonResponse
@@ -15,28 +20,41 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
-# Models and serializers
-from .models import Reading
-from .serializers import ReadingSerializer
-
 
 def index(request):
     return HttpResponse('tracker index works!')
 
 
 class ReadingList(generics.ListCreateAPIView):
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
     queryset = Reading.objects.all()
     serializer_class = ReadingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ReadingDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
     queryset = Reading.objects.all()
     serializer_class = ReadingSerializer
 
 
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 class ReadingListV4(mixins.ListModelMixin,
-                  mixins.CreateModelMixin,
-                  generics.GenericAPIView):
+                    mixins.CreateModelMixin,
+                    generics.GenericAPIView):
     queryset = Reading.objects.all()
     serializer_class = ReadingSerializer
 
@@ -48,9 +66,9 @@ class ReadingListV4(mixins.ListModelMixin,
 
 
 class ReadingDetailV4(mixins.RetrieveModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    generics.GenericAPIView):
+                      mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin,
+                      generics.GenericAPIView):
     queryset = Reading.objects.all()
     serializer_class = ReadingSerializer
 
