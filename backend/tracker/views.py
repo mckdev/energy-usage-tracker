@@ -24,6 +24,16 @@ def index(request):
     return HttpResponse('tracker index works!')
 
 
+class ReadingList(generics.ListCreateAPIView):
+    queryset = Reading.objects.all()
+    serializer_class = ReadingSerializer
+
+
+class ReadingDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reading.objects.all()
+    serializer_class = ReadingSerializer
+
+
 class ReadingListV4(mixins.ListModelMixin,
                   mixins.CreateModelMixin,
                   generics.GenericAPIView):
