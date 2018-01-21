@@ -10,6 +10,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'tracker.apps.TrackerConfig',
     'django.contrib.admin',
     'django.contrib.auth',
