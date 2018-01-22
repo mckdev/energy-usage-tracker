@@ -18,20 +18,3 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'id', 'username', 'readings')
-
-
-class OldReadingSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
-
-    class Meta:
-        model = Reading
-        fields = ('id', 'user', 'date', 'value')
-
-
-class OldUserSerializer(serializers.Serializer):
-    readings = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Reading.objects.all())
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'readings')
