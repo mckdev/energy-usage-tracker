@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.http import Http404
+from rest_framework import viewsets
 from rest_framework import generics, mixins, permissions
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .models import Reading
@@ -11,7 +13,6 @@ from .serializers import OldReadingSerializer, OldUserSerializer
 
 # API v3
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # API v1
@@ -31,6 +32,28 @@ def api_root(request, format=None):
         'users': reverse('user-list', request=request, format=format),
         'readings': reverse('reading-list', request=request, format=format)
     })
+
+
+class ReadingViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = Reading.objects.all()
+    serializer_class = ReadingSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class ReadingList(generics.ListCreateAPIView):

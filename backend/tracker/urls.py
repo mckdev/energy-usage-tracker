@@ -1,9 +1,14 @@
-from django.urls import path
+from django.urls import include, path, re_path
+from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
+router = DefaultRouter()
+router.register(r'readings', views.ReadingViewSet)
+router.register(r'users', views.UserViewSet)
+
 urlpatterns = [
-    path('', views.index, name='index'),
+    path(r'api/v6/', include(router.urls)),
     path('api/v5/', views.api_root, name="api-root"),
     path('api/v5/users/', views.UserList.as_view(), name="user-list"),
     path('api/v5/users/<int:pk>/', views.UserDetail.as_view(), name="user-detail"),
@@ -25,4 +30,4 @@ urlpatterns = [
          views.reading_detail_v1, name="reading-detail_v1"),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns)
