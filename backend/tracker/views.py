@@ -7,10 +7,6 @@ from .permissions import IsOwnerOrReadOnly
 from .serializers import ReadingSerializer, UserSerializer
 
 
-def index(request):
-    return HttpResponse('tracker index works!')
-
-
 class ReadingViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
@@ -18,8 +14,7 @@ class ReadingViewSet(viewsets.ModelViewSet):
     """
     queryset = Reading.objects.all()
     serializer_class = ReadingSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -1,0 +1,15 @@
+<div  id="graph"></div>
+<div *ngIf="readings" class="legend">
+	<span class="legend-item">Avg. usage per day: {{ usage_per_day }}</span>
+	<span class="legend-item">Annual estimation: {{ annual_estimation }}</span>
+</div>
+<div id="statistics">
+	<h2>Daily statistics</h2>
+	<table  *ngIf="readings">
+		<tr *ngFor="let reading of readings; let i = index" [attr.data-index]="i">
+			<td> {{ reading.date | date:'medium'  }}</td>
+			<td>{{ reading.value }} kWh</td>
+			<td *ngIf="(i>0)">+{{ calculateDifference(readings[i-1].value, reading.value)}} kWh</td>
+		</tr>
+	</table>
+</div>
