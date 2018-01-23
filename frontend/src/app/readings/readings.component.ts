@@ -13,6 +13,7 @@ export class ReadingsComponent implements OnInit {
 
   usage_per_day: string;
   annual_estimation: string;
+  price_per_kWh: number = 0.2323;
 
   constructor(private readingService: ReadingService) { }
 
@@ -114,5 +115,11 @@ export class ReadingsComponent implements OnInit {
   calculateDifference(startValue, endValue): string {
   	return (endValue - startValue).toFixed(1)
   }	
+
+  calculatePrice(usage): string {
+    let net = usage * this.price_per_kWh
+    let gross = net + (net * 0.19)
+    return gross.toFixed(2)
+  }
 
 }
