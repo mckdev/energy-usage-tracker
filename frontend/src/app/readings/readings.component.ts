@@ -10,7 +10,7 @@ import * as d3 from '../_d3';
 })
 export class ReadingsComponent implements OnInit {
   readings: Reading[];
-  private showStats = false;
+  showStats = false;
 
   usage_per_day: string;
   annual_estimation: string;
