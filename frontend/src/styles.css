@@ -2,26 +2,39 @@ body {
   font: 10px sans-serif;
   background: #222;
   color: #fff;
+  margin: 2em;
 }
 
 h1 {
 	text-align: center;
-	color: #FFF;
+	color: #fff;
+}
+
+h1 {
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+	border-bottom: 1px solid #444;
+	font-size: 1.2em;
 }
 
 h1, h2 {
 	text-transform: uppercase;
+	font-weight: 400;
+	letter-spacing: 2px;
 }
 
-h1 {
-	font-size: 1.6em;
-}
-
-h2 {
-	font-size: 1.2em;
-}
 svg text {
 	fill: #fff;
+}
+
+th {
+	padding: 0 0 1em 0;
+	text-align: left;
+}
+
+td {
+	border-bottom: 1px solid #333;
+	padding: 0.4em 0;
 }
 
 .axis path,
@@ -30,28 +43,37 @@ svg text {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
 .line {
   fill: none;
   stroke: #6CC417;
   stroke-width: 1.5px;
 }
-.legend {
-	margin: 0 0 2em 4em;
+
+circle {
+  stroke: #fff;
+  stroke-width: 1px;
+  fill: none;
 }
+
 .legend-item {
-	padding: 1em;
-	border-right: 1px solid #FBB117;
+	padding: 0.4em 1em;
+	margin: 0.2em 0;
+	border: 1px solid #333;
+	display: inline-block;
 }
 
-td {
-	padding: 0.5em;
-}
-
-#statistics {
-	text-align: center;
-	margin-right: 4em;
+.legend {
+	padding-bottom: 1em;
+	border-bottom: 1px solid #444;
+	
 }
 
 #statistics table {
-	margin: 0 auto;
+	width: 100%;
+	margin-bottom: 2em;
+}
+
+.dropdown-toggle-btn {
+	font-size: 0.7em;
 }

@@ -5,7 +5,7 @@ from .models import Reading
 
 class ReadingSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
 
     class Meta:
         model = Reading

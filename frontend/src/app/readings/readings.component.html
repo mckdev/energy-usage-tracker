@@ -1,17 +1,38 @@
-<div  id="graph"></div>
-<div *ngIf="readings" class="legend">
-	<span class="legend-item">Avg. usage per day: {{ usage_per_day }} kWh ({{ calculatePrice(usage_per_day) }} &euro;)</span>
-	<span class="legend-item">Annual estimation: {{ annual_estimation }} kWh ({{ calculatePrice(annual_estimation) }} &euro;)</span>
-</div>
-<div id="statistics">
-	<h2>Daily statistics</h2>
-	<table  *ngIf="readings">
-		<tr *ngFor="let reading of readings; let i = index" [attr.data-index]="i">
-			<td> {{ reading.date | date:'medium'  }}</td>
-			<td>{{ reading.value }} kWh</td>
-			<td *ngIf="(i>0)">+{{ calculateDifference(readings[i-1].value, reading.value)}} kWh</td>
-			<td *ngIf="(i>0)">+{{ calculatePrice(calculateDifference(readings[i-1].value, reading.value)) }}  &euro;</td>
-		</tr>
-	</table>
-	<i>* Prices calculated using rate &euro;{{ price_per_kWh }}/kWh.</i>
+<div class="containerX">
+	<div class="container">
+		<h2>Graph</h2>
+		<div  id="graph"></div>
+		<div *ngIf="readings" class="legend">
+			<span class="legend-item">Avg. usage per day: {{ usage_per_day }} kWh ({{ calculatePrice(usage_per_day) }} &euro;)</span>
+			<span class="legend-item">Annual estimation: {{ annual_estimation }} kWh ({{ calculatePrice(annual_estimation) }} &euro;)</span>
+		</div>	
+	</div>
+	<div class="container">
+		<div id="statistics">
+			<h2 (click)="toggleStats()">Stats <span class="dropdown-toggle-btn" *ngIf="!showStats">&#9660;</span><span class="dropdown-toggle-btn" *ngIf="showStats">&#9650;</span></h2>
+			<div *ngIf="showStats">
+				<table *ngIf="readings">
+					<tr>
+						<th>date</th>
+						<th>reading</th>
+						<th>difference (kWh)</th>
+						<th>difference (&euro;)</th>
+					</tr>
+					<tr *ngFor="let reading of readings; let i = index" [attr.data-index]="i">
+						<td> {{ reading.date | date:'medium'  }}</td>
+						<td>{{ reading.value }} kWh</td>
+						<td>
+							<span *ngIf="(i>0)">+{{ calculateDifference(readings[i-1].value, reading.value)}} kWh</span>
+							<span *ngIf="(i==0)">n/a</span>
+						</td>
+						<td>
+							<span *ngIf="(i>0)">+{{ calculatePrice(calculateDifference(readings[i-1].value, reading.value)) }}  &euro;</span>
+							<span *ngIf="(i==0)">n/a</span>
+						</td>
+					</tr>
+				</table>
+				<i>* Prices calculated using rate &euro;{{ price_per_kWh }}/kWh.</i>
+			</div>
+		</div>
+	</div>
 </div>

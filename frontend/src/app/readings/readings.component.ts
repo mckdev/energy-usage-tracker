@@ -10,6 +10,7 @@ import * as d3 from '../_d3';
 })
 export class ReadingsComponent implements OnInit {
   readings: Reading[];
+  private showStats = false;
 
   usage_per_day: string;
   annual_estimation: string;
@@ -31,10 +32,14 @@ export class ReadingsComponent implements OnInit {
       })
   }
 
+  toggleStats() {
+    this.showStats = !this.showStats
+  }
+
   createGraph() {
-    let margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    let margin = {top: 10, right: 120, bottom: 30, left: 60},
+        width = 600,
+        height = 200;
 
     let x = d3.scaleTime().range([0, width]);
     let y = d3.scaleLinear().range([height, 0]);
@@ -47,45 +52,53 @@ export class ReadingsComponent implements OnInit {
       .y(function(d) { return y(d.value); });
 
     let svg = d3.select('div#graph').append('svg')
-  	  .attr('width', width + margin.left + margin.right)
-  	  .attr('height', height + margin.top + margin.bottom)
-  	  .append('g')
-  	  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      .attr("width", '100%')
+      .attr("height", '100%')
+      .attr('viewBox','0 0 '+ (width + margin.right) +' '+ (height + margin.bottom))
+      .attr('preserveAspectRatio','xMinYMin')
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
     let parseDate = d3.timeParse('%Y-%m-%d %H:%M:%S')
 
-	this.readings.forEach(function(d) {
-	  d.date = parseDate(d.date)
-	});
+  	this.readings.forEach(function(d) {
+  	  d.date = parseDate(d.date)
+  	});
 
-	x.domain(d3.extent(this.readings, function(d) { return d.date }));
-	y.domain(d3.extent(this.readings, function(d) { return d.value; }));
+  	x.domain(d3.extent(this.readings, function(d) { return d.date }));
+  	y.domain(d3.extent(this.readings, function(d) { return d.value; }));
 
-	svg.append("g")
-	  .attr("class", "x axis")
-	  .attr("transform", "translate(0," + height + ")")
-	  .call(xAxis)
-    .append("text")
-    .text("Date")
-    .style("text-anchor", "end")
-    .attr("x", width)
-    .attr("y", -6)
+  	svg.append("g")
+  	  .attr("class", "x axis")
+  	  .attr("transform", "translate(0," + height + ")")
+  	  .call(xAxis)
+      .append("text")
+      .text("Date")
+      .style("text-anchor", "end")
+      .attr("x", width)
+      .attr("y", -6)
 
-	svg.append("g")
-	  .attr("class", "y axis")
-	  .call(yAxis)
-	  .append("text")
-	  .attr("transform", "rotate(-90)")
-	  .attr("y", 6)
-	  .attr("dy", ".71em")
-	  .style("text-anchor", "end")
-	  .text("Reading value");	 
+  	svg.append("g")
+  	  .attr("class", "y axis")
+  	  .call(yAxis)
+  	  .append("text")
+  	  .attr("transform", "rotate(-90)")
+  	  .attr("y", 6)
+  	  .attr("dy", ".71em")
+  	  .style("text-anchor", "end")
+  	  .text("kWh");	 
 
-	svg.append("path")
-	  .datum(this.readings)
-	  .attr("class", "line")
-	  .attr("d", line);	
+  	svg.append("path")
+  	  .datum(this.readings)
+  	  .attr("class", "line")
+  	  .attr("d", line);	
 
+    svg.selectAll("dot")
+        .data(this.readings)
+      .enter().append("circle")
+        .attr("r", 1.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.value); });
   }
 
   treatAsUTC(date) {
