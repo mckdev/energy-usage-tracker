@@ -1,8 +1,9 @@
 import os
+import dj_database_url
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_HOSTS = ['*']
 
 # Secret Key
@@ -24,6 +25,18 @@ except NameError:
             Exception('Please create a %s file with random characters \
             to generate your secret key!' % SECRET_FILE)
 
+# Database
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+if not DEBUG:
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
 
 # Application definition
 
@@ -40,6 +53,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,16 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
-
-# Database
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation
