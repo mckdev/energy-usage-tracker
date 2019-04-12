@@ -1,1 +1,1 @@
-ng build --prod --output-path ../backend/static --output-hashing none
+ng build --prod --output-path=../backend/static --output-hashing=none

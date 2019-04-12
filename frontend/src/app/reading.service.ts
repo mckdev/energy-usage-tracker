@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Reading } from './reading'
